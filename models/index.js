@@ -1,9 +1,9 @@
 const db = {}
 
 db.ROLES = {
-    user, 
-    manager, 
-    author
+    user: 'user', 
+    manager: 'manager', 
+    author: 'author'
 }
 
 module.exports = db;

@@ -4,22 +4,10 @@ const NEXTID = {val: 4}
 
 const users = [
     {
-        "id": 1,
-        "name": "Misael Ferreira",
-        "email": "misael.ferreira@gmail.com",
-        "role": db.ROLES.manager
-    },
-    {
-        "id": 2,
-        "name": "Cris",
-        "email": "cris.ferreira@gmail.com",
-        "role": db.ROLES.author
-    },
-    {
-        "id": 3,
-        "name": "John Doe",
-        "email": "johndoe@gmail.com",
-        "role": db.ROLES.user
+        "name": "System Administrator",
+        "email": "admin@myblog.com",
+        "password": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwiaWF0IjoxNTg2MTA4Mzc5LCJleHAiOjE1ODYxOTQ3Nzl9.ubEJlzjYJdeWQpGwq0yuH6wWz2k9XwUT4Dggphg1w7g",
+        "role": "manager"
     }
 ]
 
@@ -33,7 +21,7 @@ save = payload => {
     return new Promise(async (resolve, reject) => {
         let user = { id: NEXTID.val++, ...payload };
         users.push(user);
-        resolve(payload);
+        resolve(user);
     });
 }
 
@@ -62,9 +50,16 @@ getByEmail = email => {
     });
 }
 
+setRole = (id, role) => {
+    users.filter(f => +f.id === +id)
+    .map(user => user.role = role);
+}
+
 module.exports = {
     save, 
     remove,
     get,
-    listAll
+    getByEmail,
+    listAll,
+    setRole
 }

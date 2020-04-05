@@ -3,30 +3,30 @@ const ROLES = db.ROLES;
 const userService = require('../services/userService');
 
 checkDuplicatedEmail = (req, res, next) => {
-    userService.getByEmail(req.body.username).then(user => {
+    userService.getByEmail(req.body.email).then(user => {
         if(user) {
             res.status(400).send({
-                message: 'Failed! Username already in use'
+                message: 'Failed! email already in use'
             });
-            return;
         }
     })
+    next();
 }
 
 checkRolesExist = (req, res, next) => {
     if(req.body.roles) {
         req.body.roles.forEach( role => {
-            if(!ROLES.includes(role)) {
+            if(!Object.values(ROLES).includes(role)) {
                 res.status(400).send({
                     message: 'Failed! Role does not exist: ' + role
                 })
-                return;
             }
         })
     }
+    next();
 }
 
-modules.export = {
+module.exports = {
     checkDuplicatedEmail,
     checkRolesExist
 }

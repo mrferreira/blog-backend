@@ -6,39 +6,56 @@ verifyToken = (req, res, next) => {
     let token = req.headers['x-access-token'];
 
     if(!token) {
-        res.status(403).send({
+        return res.status(403).json({
             message: 'No token provided.'
         });
     }
-
+    
     jwt.verify(token, process.env.AUTH_SECRET, (err, decoded) => {
         if(err) {
-            return res.status(401).send({
+            return res.status(401).json({
                 message: 'unauthorized'
             })
         }
         req.userId = decoded.id;
-        next();
-    })
+    });
+
+    console.log('verify token ok');
+    return next();
 }
 
-isManager = (req, res) => {
-    return checkRole(req, res, 'Manager role is required.');
+isManager = (req, res, next) => {
+    checkRole(req, res, next, db.ROLES.manager, 'Manager role is required.');
+    next();
 }
 
-isAuthor = (req, res) => {
-    return checkRole(req, res, 'Author role is required.');
+isAuthor = (req, res, next) => {
+    checkRole(req, res, db.ROLES.author, 'Author role is required.');
+    next();
 }
 
-checkRole = (req, res, errMsg ) => {
+checkRole = (req, res, role, errMsg ) => {
     userService.get(req.userId).then(user => {
-        if(user.role !== db.ROLES.manager) {
-            res.status(403).send({
-                message: errMsg
+        console.log(`userId: ${req.userId} - user: ${user}`)
+
+        if(user === null) {
+            return res.status(404).json({
+                message: `User ${req.userId} not found.`
             });
         }
-        return;
+
+        if(user.role !== role) {
+            return res.status(401).json({
+                message: errMsg
+            });
+
+        }
+    })
+    .catch(err => {
+        console.log(err)
+        return res.status(401).json({ message: errMsg});
     });
+    console.log(`check role ${role} ok`);
 }
 
 module.exports = {

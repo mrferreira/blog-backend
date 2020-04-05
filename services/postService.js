@@ -1,4 +1,8 @@
 
+const NEXTID = {
+    "val": 3
+};
+
 const posts = [
     {
         "id": 1,
@@ -15,14 +19,25 @@ const posts = [
 listAll = () => posts;
 
 save = payload => {
-    posts.push(payload);
+    delete payload.id;
+    const post = {
+        id: getNextId(),
+        ...payload
+    }
+    posts.push(post);
+}
+
+getNextId = () => {
+    let id = NEXTID.val+1;
+    NEXTID.val = id;
+    return id;
 }
 
 remove = id => {
     const remove = posts
         .filter(f => +f.id === +id);
-    
-        if(remove.length > 0) {
+
+    if(remove.length > 0) {
         posts.splice(posts.indexOf(remove[0]), 1);
         return true;
     }
