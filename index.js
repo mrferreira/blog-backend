@@ -20,4 +20,4 @@ app.use(function(req, res, next) {
 app.use(require('./routes/authRouter'));
 app.use(require('./routes/apiRouter'));
 
-app.listen(5000, () => console.log(`${process.env.APP_NAME} running on port 5000`));
+app.listen(process.env.PORT || 5000, () => console.log(`${process.env.APP_NAME} running on port 5000`));
